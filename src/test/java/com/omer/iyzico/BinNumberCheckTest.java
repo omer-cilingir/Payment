@@ -6,7 +6,7 @@ import static org.junit.Assert.*;
 import com.iyzipay.model.BinNumber;
 import com.omer.iyzico.checkers.BinNumberCheck;
 
-public class BinNumberTest {
+public class BinNumberCheckTest {
 	
 	@Test
 	public void binNumbercheck() {

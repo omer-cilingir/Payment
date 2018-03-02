@@ -12,17 +12,21 @@ import com.omer.iyzico.repository.LogRepository;
 public class LogService {
 
 	@Autowired
-	private LogRepository paymentRepository;
+	private LogRepository logRepository;
 
 	public Log findById(Integer Id) {
-		return paymentRepository.findById(Id);
+		return logRepository.findById(Id);
 	}
 
 	public List<Log> findAll() {
-		return paymentRepository.findAll();
+		return logRepository.findAll();
 	}
 
 	public Log save(Log log) {
-		return paymentRepository.save(log);
+		return logRepository.save(log);
+	}
+
+	public void delete(String processId) {
+		logRepository.deleteByProcessId(processId);
 	}
 }

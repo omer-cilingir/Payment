@@ -25,4 +25,7 @@ public class SaleService {
 	public Sale save(Sale sale) {
 		return saleRepository.save(sale);
 	}
+	public void delete(String processId) {
+		saleRepository.deleteByProcessId(processId);
+	}
 }

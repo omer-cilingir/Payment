@@ -1,4 +1,4 @@
-package com.omer.iyzico.main;
+package com.omer.iyzico;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -8,8 +8,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 @ComponentScan(basePackages = { "com.omer.iyzico" })
-@EnableJpaRepositories("com.omer.iyzico")
-@EntityScan( basePackages = {"com.omer.iyzico"} )
+@EnableJpaRepositories(basePackages = { "com.omer.iyzico" })
+@EntityScan(basePackages = { "com.omer.iyzico" })
 public class Application {
 
 	public static void main(String[] args) {

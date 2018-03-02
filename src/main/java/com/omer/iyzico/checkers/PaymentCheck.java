@@ -54,30 +54,32 @@ public class PaymentCheck {
 		} else {
 			result = "Card numaranız boş olamaz";
 		}
-		if (result.equals(SUCCESS)) {
-			try {
+		try {
+			if (result.equals(SUCCESS)) {
+
 				priceChecker(request);
-			} catch (ParseException e) {
-				return "İşleminiz sırasnda bir hata oluştu";
-			}
-			boolean checkPromotionCode = true;
-			String promotionCode = request.getPromotionCode();
-			if (promotionCode != null && promotionCode.length() > 0) {
-				checkPromotionCode = checkPromotionCode(request);
-			}
-			if (checkPromotionCode) {
-				// Payment payment = Payment.create(request, options);
-				result = "Ödeme Alındı";
-				success = "SUCCESS";
-			} else {
-				result = "Promotion code hatalı.";
-			}
 
+				boolean checkPromotionCode = true;
+				String promotionCode = request.getPromotionCode();
+				if (promotionCode != null && promotionCode.length() > 0) {
+					checkPromotionCode = checkPromotionCode(request);
+				}
+				if (checkPromotionCode) {
+					// Payment payment = Payment.create(request, options);
+					result = "Ödeme Alındı";
+					success = "SUCCESS";
+				} else {
+					result = "Promotion code hatalı.";
+				}
+
+			}
+			saveSale(request, success);
+			saveLog(request);
+
+		} catch (ParseException e) {
+			return "İşleminiz sırasnda bir hata oluştu";
 		}
-		saveSale(request, success);
-		saveLog(request);
-
-		return gson.toJson(result);
+		return result;
 
 	}
 
@@ -109,15 +111,15 @@ public class PaymentCheck {
 		Date date = request.getCreateDate();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		if (date.after(sdf.parse("01/07/2017")) && date.before(sdf.parse("15/01/2018"))) {
-			request.setPrice(new BigDecimal("250"));
+			request.setPrice(new BigDecimal("250").setScale(1, BigDecimal.ROUND_UNNECESSARY));
 		} else if (date.after(sdf.parse("16/01/2018")) && date.before(sdf.parse("28/02/2018"))) {
-			request.setPrice(new BigDecimal("500"));
+			request.setPrice(new BigDecimal("500").setScale(1, BigDecimal.ROUND_UNNECESSARY));
 		} else if (date.after(sdf.parse("01/03/2018")) && date.before(sdf.parse("30/04/2018"))) {
-			request.setPrice(new BigDecimal("750"));
+			request.setPrice(new BigDecimal("750").setScale(1, BigDecimal.ROUND_UNNECESSARY));
 		} else if (date.after(sdf.parse("01/05/2018")) && date.before(sdf.parse("27/05/2018"))) {
-			request.setPrice(new BigDecimal("1000"));
+			request.setPrice(new BigDecimal("1000").setScale(1, BigDecimal.ROUND_UNNECESSARY));
 		} else {
-			request.setPrice(new BigDecimal("1000"));
+			request.setPrice(new BigDecimal("1000").setScale(1, BigDecimal.ROUND_UNNECESSARY));
 		}
 	}
 
@@ -128,7 +130,7 @@ public class PaymentCheck {
 		switch (request.getPromotionCode()) {
 		case "GAMMA":
 			if (localDate.getMonthValue() == 3 && localDate.getDayOfMonth() == 13) {
-				price = price.subtract(price.multiply(new BigDecimal("0.1")));
+				price = price.subtract(price.multiply(new BigDecimal("0.1"))).setScale(1, BigDecimal.ROUND_UNNECESSARY);
 				request.setPrice(price);
 				return true;
 			} else {
@@ -137,7 +139,8 @@ public class PaymentCheck {
 
 		case "BECK":
 			if (localDate.getMonthValue() == 3 && localDate.getDayOfMonth() == 31) {
-				price = price.subtract(price.multiply(new BigDecimal("0.15")));
+				price = price.subtract(price.multiply(new BigDecimal("0.15"))).setScale(1,
+						BigDecimal.ROUND_UNNECESSARY);
 				request.setPrice(price);
 				return true;
 			} else {
@@ -145,7 +148,8 @@ public class PaymentCheck {
 			}
 		case "CUNNINGHAM":
 			if (localDate.getMonthValue() == 5 && localDate.getDayOfMonth() == 26) {
-				price = price.subtract(price.multiply(new BigDecimal("0.05")));
+				price = price.subtract(price.multiply(new BigDecimal("0.05"))).setScale(1,
+						BigDecimal.ROUND_UNNECESSARY);
 				request.setPrice(price);
 				return true;
 			} else {
@@ -153,7 +157,7 @@ public class PaymentCheck {
 			}
 		case "AGILE":
 			if (localDate.getMonthValue() == 2 && localDate.getDayOfMonth() <= 13 && localDate.getDayOfMonth() >= 13) {
-				price = price.subtract(price.multiply(new BigDecimal("0.2")));
+				price = price.subtract(price.multiply(new BigDecimal("0.2"))).setScale(1, BigDecimal.ROUND_UNNECESSARY);
 				return true;
 			} else {
 				return false;
@@ -165,11 +169,13 @@ public class PaymentCheck {
 
 	}
 
-	private void saveLog(Request request) {
+	private void saveLog(Request request) throws ParseException {
 		Date createDate = Calendar.getInstance().getTime();
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		// SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
 		Log log = new Log();
 		log.setCardNumber(request.getCardNumber());
-		log.setCreateDate(createDate);
+		log.setCreateDate(sdf.parse(sdf.format(createDate)));
 		log.setProcessId(request.getProcessId());
 		logService.save(log);
 	}

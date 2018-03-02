@@ -9,4 +9,6 @@ import com.omer.iyzico.model.Sale;
 public interface SaleRepository extends JpaRepository<Sale, Integer> {
 
 	public Sale findById(Integer id);
+	
+	public void deleteByProcessId(String processId);
 }

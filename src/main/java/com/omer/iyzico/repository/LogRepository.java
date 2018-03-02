@@ -9,4 +9,6 @@ import com.omer.iyzico.model.Log;
 public interface LogRepository extends JpaRepository<Log, Integer> {
 
 	public Log findById(Integer id);
+
+	public void deleteByProcessId(String processId);
 }
