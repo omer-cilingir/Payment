@@ -1,7 +1,8 @@
 package com.omer.iyzico;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 import com.iyzipay.model.BinNumber;
 import com.omer.iyzico.checkers.BinNumberCheck;

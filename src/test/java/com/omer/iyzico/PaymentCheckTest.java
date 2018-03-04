@@ -7,7 +7,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +15,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.omer.iyzico.checkers.PaymentCheck;
 import com.omer.iyzico.model.Request;
-import com.omer.iyzico.service.LogService;
-import com.omer.iyzico.service.SaleService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest

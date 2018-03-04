@@ -10,6 +10,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -30,6 +31,7 @@ public class PaymentCheck {
 	private static final String SUCCESS = "success";
 	Options options;
 	Gson gson = new Gson();
+	final static Logger logger = Logger.getLogger(PaymentCheck.class);
 
 	@Autowired
 	private LogService logService;
@@ -170,13 +172,14 @@ public class PaymentCheck {
 	}
 
 	private void saveLog(Request request) throws ParseException {
-		Date createDate = Calendar.getInstance().getTime();
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		// SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+
+		Date date = Calendar.getInstance().getTime();
+		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy'T'HH:mm:ssZ");
 		Log log = new Log();
 		log.setCardNumber(request.getCardNumber());
-		log.setCreateDate(sdf.parse(sdf.format(createDate)));
+		log.setCreateDate(date);
 		log.setProcessId(request.getProcessId());
+		logger.info(sdf.format(log.getCreateDate()) + "," + log.getProcessId() + "," + log.getCardNumber());
 		logService.save(log);
 	}
 
