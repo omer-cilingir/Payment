@@ -50,7 +50,7 @@ public class PaymentControllerTest {
 
 		mockMvc.perform(get("/getBinNumber").param("binNumber", "554960"))
 			.andExpect(status().isOk())
-			.andExpect(content().string("Ödeme Alındı"));
+			.andExpect(jsonPath("$.status").value("success"));
 	}
 
 }

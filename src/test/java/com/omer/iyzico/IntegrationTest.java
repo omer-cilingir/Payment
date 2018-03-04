@@ -1,5 +1,6 @@
 package com.omer.iyzico;
 
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -14,7 +15,7 @@ import com.omer.iyzico.repository.TicketRepository;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = Application.class)
 @AutoConfigureMockMvc
-@TestPropertySource(locations = "classpath:application-integrationtest.properties")
+//@TestPropertySource(locations = "classpath:application-integrationtest.properties")
 public class IntegrationTest {
 
 	@Autowired
@@ -23,5 +24,8 @@ public class IntegrationTest {
 	@Autowired
 	private TicketRepository repository;
 
-	// write test cases here
+	@Test
+	public void return_true() {
+		
+	}
 }
