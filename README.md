@@ -1,6 +1,5 @@
-# Omer-Payment
 
-Ödeme yapmak için
+#### Ödeme yapmak için
 ```http
 POST https://omer-payment.herokuapp.com/payment
 ```
@@ -27,7 +26,7 @@ Response example
 }
 ```
 
-Bilet eklemek için
+#### Bilet eklemek için
 ```http
 POST https://omer-payment.herokuapp.com/tickets
 ```
@@ -48,6 +47,7 @@ Request Example
 | `type` | Biletin satıldığı dönemin ismi |
 | `price` | Bilet fiyatı |
 | `currency` | Para birimi |
+ 
 Response example
 ```json
 {
@@ -60,7 +60,7 @@ Response example
 }
 ```
 
-Biletleri listelemek için
+#### Biletleri listelemek için
 ```http
 GET https://omer-payment.herokuapp.com/tickets
 ```
