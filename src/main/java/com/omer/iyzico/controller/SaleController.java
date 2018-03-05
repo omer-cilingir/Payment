@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.omer.iyzico.model.Sale;
 import com.omer.iyzico.service.SaleService;
 
@@ -16,8 +17,8 @@ import com.omer.iyzico.service.SaleService;
 @RequestMapping("/")
 public class SaleController {
 
-	Gson gson = new Gson();
-
+	Gson gson = new GsonBuilder().setPrettyPrinting().create();
+	
 	@Autowired
 	SaleService saleService;
 
