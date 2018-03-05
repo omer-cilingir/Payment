@@ -19,6 +19,7 @@ Request example
 | `createDate` | Tarih formatı  \"yyyy-MM-dd\" şeklinde olmalıdır. |
 | `cardNumber` | Kullanıcın card numarası |
 | `promotionCode` | Kullanıcı tarafından girilen promosyon kodu |
+
 Response example
 ```json
 {
