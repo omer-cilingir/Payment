@@ -42,7 +42,7 @@ public class PaymentControllerTest {
 
 		mockMvc.perform(post("/payment").content(json).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
-				.andExpect(content().string("Ödeme Alındı"));
+				.andExpect(content().string("{\"result\":\"Ödeme Alındı\"}"));
 	}
 
 	@Test
