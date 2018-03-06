@@ -15,12 +15,12 @@ import com.omer.iyzico.model.Sale;
 import com.omer.iyzico.service.SaleService;
 
 @RestController
-@CrossOrigin(origins="*")
+@CrossOrigin(origins = "*")
 @RequestMapping("/")
 public class SaleController {
 
 	Gson gson = new GsonBuilder().setPrettyPrinting().create();
-	
+
 	@Autowired
 	SaleService saleService;
 

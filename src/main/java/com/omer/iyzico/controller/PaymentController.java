@@ -20,7 +20,7 @@ import com.omer.iyzico.checkers.PaymentCheck;
 import com.omer.iyzico.model.Request;
 
 @RestController
-@CrossOrigin(origins="*")
+@CrossOrigin(origins = "*")
 @RequestMapping("/")
 public class PaymentController {
 

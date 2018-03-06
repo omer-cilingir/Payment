@@ -15,10 +15,10 @@ import com.omer.iyzico.model.Log;
 import com.omer.iyzico.service.LogService;
 
 @RestController
-@CrossOrigin(origins="*")
+@CrossOrigin(origins = "*")
 @RequestMapping("/")
 public class LogController {
-	
+
 	Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
 	@Autowired

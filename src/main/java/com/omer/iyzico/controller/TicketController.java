@@ -17,7 +17,7 @@ import com.omer.iyzico.model.Ticket;
 import com.omer.iyzico.service.TicketService;
 
 @RestController
-@CrossOrigin(origins="*")
+@CrossOrigin(origins = "*")
 @RequestMapping("/")
 public class TicketController {
 

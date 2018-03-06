@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.omer.iyzico.repository.TicketRepository;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = Application.class)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = TicketPaymentApplication.class)
 @AutoConfigureMockMvc
 //@TestPropertySource(locations = "classpath:application-integrationtest.properties")
 public class IntegrationTest {
