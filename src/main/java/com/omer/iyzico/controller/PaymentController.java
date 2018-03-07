@@ -28,6 +28,9 @@ public class PaymentController {
 
 	@Autowired
 	PaymentCheck paymentCheck;
+	
+	@Autowired
+	private BinNumberCheck binNumberCheck;
 
 	@RequestMapping(path = "/payment", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Map payment(@RequestBody Request request) {
@@ -37,6 +40,6 @@ public class PaymentController {
 
 	@RequestMapping(path = "/getBinNumber", produces = MediaType.APPLICATION_JSON_VALUE)
 	public BinNumber binNumber(@RequestParam String binNumber) {
-		return new BinNumberCheck().checkBinNumber(binNumber);
+		return binNumberCheck.checkBinNumber(binNumber);
 	}
 }
