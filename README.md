@@ -1,4 +1,5 @@
 
+[![Coverage Status](https://coveralls.io/repos/github/omerxl/Payment/badge.svg?branch=ticket-payment)](https://coveralls.io/github/omerxl/Payment?branch=ticket-payment)
 #### Ödeme yapmak için
 ```http
 POST https://omer-payment.herokuapp.com/payment
