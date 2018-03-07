@@ -37,12 +37,6 @@ public class Log {
 		return id;
 	}
 
-	public Log(String processId, Date createDate, String cardNumber) {
-		this.processId = processId;
-		this.createDate = createDate;
-		this.cardNumber = cardNumber;
-	}
-
 	public void setId(int id) {
 		this.id = id;
 	}

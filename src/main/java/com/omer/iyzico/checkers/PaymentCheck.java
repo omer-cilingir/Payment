@@ -14,8 +14,6 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.google.gson.Gson;
-import com.iyzipay.Options;
 import com.iyzipay.model.BinNumber;
 import com.omer.iyzico.model.Log;
 import com.omer.iyzico.model.Request;
@@ -29,21 +27,16 @@ public class PaymentCheck {
 	private static final Long HALK_BANK_CODE = 12L;
 	private static final List<Long> BANK_CODE_LIST = Arrays.asList(46L, 62L, 64L, 111L);
 	private static final String SUCCESS = "success";
-	Options options;
-	Gson gson = new Gson();
 	final static Logger logger = Logger.getLogger(PaymentCheck.class);
 
+	@Autowired
+	private BinNumberCheck binNumberCheck;
 	@Autowired
 	private LogService logService;
 	@Autowired
 	private SaleService saleService;
 
 	public PaymentCheck() {
-		options = new Options();
-		options.setApiKey("sandbox-WJQ1HcphuA9cesK1quRqOko6tBneuy46");
-		options.setSecretKey("sandbox-O5HjgLsjdf9iUSOj9FGI03TLVzmni9sA");
-		options.setBaseUrl("https://sandbox-api.iyzipay.com");
-
 	}
 
 	public String payment(Request request) {
@@ -51,33 +44,35 @@ public class PaymentCheck {
 		String success = "FAIL";
 		if (request.getCardNumber() != null && request.getCardNumber().length() >= 6) {
 			String binNumberString = request.getCardNumber().substring(0, 6);
-			BinNumber binNumber = new BinNumberCheck().checkBinNumber(binNumberString);
+			BinNumber binNumber = binNumberCheck.checkBinNumber(binNumberString);
 			result = debitCardChecker(binNumber);
 		} else {
-			result = "Card numaranız boş olamaz";
+			result = "Kart numaranız boş olamaz";
 		}
 		try {
 			if (result.equals(SUCCESS)) {
 
 				priceChecker(request);
+				if (request.getPrice().compareTo(new BigDecimal("-1")) != 0) {
+					boolean checkPromotionCode = true;
+					String promotionCode = request.getPromotionCode();
+					if (promotionCode != null && promotionCode.length() > 0) {
+						checkPromotionCode = checkPromotionCode(request);
+					}
+					if (checkPromotionCode) {
+						// Payment payment = Payment.create(request, options);
+						result = "Ödeme Alındı";
+						success = "SUCCESS";
+					} else {
+						result = "Promotion code hatalı.";
+					}
 
-				boolean checkPromotionCode = true;
-				String promotionCode = request.getPromotionCode();
-				if (promotionCode != null && promotionCode.length() > 0) {
-					checkPromotionCode = checkPromotionCode(request);
-				}
-				if (checkPromotionCode) {
-					// Payment payment = Payment.create(request, options);
-					result = "Ödeme Alındı";
-					success = "SUCCESS";
 				} else {
-					result = "Promotion code hatalı.";
+					result = "Etkinlik tarihleri dışında bilet alınamaz";
 				}
-
 			}
 			saveSale(request, success);
 			saveLog(request);
-
 		} catch (ParseException e) {
 			return "İşleminiz sırasnda bir hata oluştu";
 		}
@@ -121,14 +116,14 @@ public class PaymentCheck {
 		} else if (date.after(sdf.parse("01/05/2018")) && date.before(sdf.parse("27/05/2018"))) {
 			request.setPrice(new BigDecimal("1000").setScale(1, BigDecimal.ROUND_UNNECESSARY));
 		} else {
-			request.setPrice(new BigDecimal("1000").setScale(1, BigDecimal.ROUND_UNNECESSARY));
+			request.setPrice(new BigDecimal("-1").setScale(1, BigDecimal.ROUND_UNNECESSARY));
 		}
 	}
 
 	private boolean checkPromotionCode(Request request) {
-		Date date = request.getCreateDate();
 		BigDecimal price = request.getPrice();
-		LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+//		LocalDate localDate = new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		LocalDate localDate = request.getCreateDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 		switch (request.getPromotionCode()) {
 		case "GAMMA":
 			if (localDate.getMonthValue() == 3 && localDate.getDayOfMonth() == 13) {

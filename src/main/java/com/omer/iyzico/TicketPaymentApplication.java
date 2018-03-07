@@ -16,5 +16,4 @@ public class TicketPaymentApplication {
 		SpringApplication.run(TicketPaymentApplication.class, args);
 
 	}
-
 }
