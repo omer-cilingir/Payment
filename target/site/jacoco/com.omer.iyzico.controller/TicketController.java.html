@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,47 +12,49 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.omer.iyzico.model.Ticket;
 import com.omer.iyzico.service.TicketService;
 
 @RestController
+@CrossOrigin(origins = &quot;*&quot;)
 @RequestMapping(&quot;/&quot;)
-<span class="fc" id="L19">public class TicketController {</span>
+<span class="fc" id="L22">public class TicketController {</span>
 
-<span class="fc" id="L21">	Gson gson = new Gson();</span>
+<span class="fc" id="L24">	Gson gson = new GsonBuilder().setPrettyPrinting().create();</span>
 
 	@Autowired
 	TicketService ticketService;
 
 	@RequestMapping(path = &quot;tickets&quot;, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public String createTicket(@RequestBody Ticket ticket) {
-<span class="nc" id="L28">		Ticket savedTicket = ticketService.save(ticket);</span>
-<span class="nc" id="L29">		return gson.toJson(savedTicket);</span>
+<span class="nc" id="L31">		Ticket savedTicket = ticketService.save(ticket);</span>
+<span class="nc" id="L32">		return gson.toJson(savedTicket);</span>
 	}
 
 	@RequestMapping(path = &quot;tickets/{id}&quot;, method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
 	public String editTicket(@PathVariable(&quot;id&quot;) Integer id, @RequestBody Ticket ticket) {
-<span class="nc" id="L34">		ticket.setId(id);</span>
-<span class="nc" id="L35">		Ticket savedTicket = ticketService.save(ticket);</span>
-<span class="nc" id="L36">		return gson.toJson(savedTicket);</span>
+<span class="nc" id="L37">		ticket.setId(id);</span>
+<span class="nc" id="L38">		Ticket savedTicket = ticketService.save(ticket);</span>
+<span class="nc" id="L39">		return gson.toJson(savedTicket);</span>
 	}
 
 	@RequestMapping(path = &quot;tickets&quot;, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public String listTickets() {
-<span class="fc" id="L41">		List&lt;Ticket&gt; tickets = ticketService.findAll();</span>
-<span class="fc" id="L42">		return gson.toJson(tickets);</span>
+<span class="fc" id="L44">		List&lt;Ticket&gt; tickets = ticketService.findAll();</span>
+<span class="fc" id="L45">		return gson.toJson(tickets);</span>
 	}
 
 	@RequestMapping(path = &quot;tickets/{id}&quot;, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public String getTicket(@PathVariable(&quot;id&quot;) Integer id) {
-<span class="fc" id="L47">		Ticket ticket = ticketService.findById(id);</span>
-<span class="fc" id="L48">		return gson.toJson(ticket);</span>
+<span class="fc" id="L50">		Ticket ticket = ticketService.findById(id);</span>
+<span class="fc" id="L51">		return gson.toJson(ticket);</span>
 	}
 
 	@RequestMapping(path = &quot;tickets/{id}&quot;, method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public String deleteTicket(@PathVariable(&quot;id&quot;) Integer id) {
-<span class="nc" id="L53">		ticketService.deleteById(id);</span>
-<span class="nc" id="L54">		return gson.toJson(&quot;Ticket Deleted&quot;);</span>
+<span class="nc" id="L56">		ticketService.deleteById(id);</span>
+<span class="nc" id="L57">		return gson.toJson(&quot;Ticket Deleted&quot;);</span>
 	}
 
 }

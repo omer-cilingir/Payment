@@ -14,8 +14,6 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.google.gson.Gson;
-import com.iyzipay.Options;
 import com.iyzipay.model.BinNumber;
 import com.omer.iyzico.model.Log;
 import com.omer.iyzico.model.Request;
@@ -26,146 +24,143 @@ import com.omer.iyzico.service.SaleService;
 @Component
 public class PaymentCheck {
 	private static final String DEBIT_CARD = &quot;DEBIT_CARD&quot;;
-<span class="fc" id="L29">	private static final Long HALK_BANK_CODE = 12L;</span>
-<span class="fc" id="L30">	private static final List&lt;Long&gt; BANK_CODE_LIST = Arrays.asList(46L, 62L, 64L, 111L);</span>
+<span class="fc" id="L27">	private static final Long HALK_BANK_CODE = 12L;</span>
+<span class="fc" id="L28">	private static final List&lt;Long&gt; BANK_CODE_LIST = Arrays.asList(46L, 62L, 64L, 111L);</span>
 	private static final String SUCCESS = &quot;success&quot;;
-	Options options;
-<span class="fc" id="L33">	Gson gson = new Gson();</span>
-<span class="fc" id="L34">	final static Logger logger = Logger.getLogger(PaymentCheck.class);</span>
+<span class="fc" id="L30">	final static Logger logger = Logger.getLogger(PaymentCheck.class);</span>
 
+	@Autowired
+	private BinNumberCheck binNumberCheck;
 	@Autowired
 	private LogService logService;
 	@Autowired
 	private SaleService saleService;
 
-<span class="fc" id="L41">	public PaymentCheck() {</span>
-<span class="fc" id="L42">		options = new Options();</span>
-<span class="fc" id="L43">		options.setApiKey(&quot;sandbox-WJQ1HcphuA9cesK1quRqOko6tBneuy46&quot;);</span>
-<span class="fc" id="L44">		options.setSecretKey(&quot;sandbox-O5HjgLsjdf9iUSOj9FGI03TLVzmni9sA&quot;);</span>
-<span class="fc" id="L45">		options.setBaseUrl(&quot;https://sandbox-api.iyzipay.com&quot;);</span>
-
-<span class="fc" id="L47">	}</span>
+<span class="fc" id="L39">	public PaymentCheck() {</span>
+<span class="fc" id="L40">	}</span>
 
 	public String payment(Request request) {
-<span class="fc" id="L50">		String result = &quot;&quot;;</span>
-<span class="fc" id="L51">		String success = &quot;FAIL&quot;;</span>
-<span class="pc bpc" id="L52" title="1 of 4 branches missed.">		if (request.getCardNumber() != null &amp;&amp; request.getCardNumber().length() &gt;= 6) {</span>
-<span class="fc" id="L53">			String binNumberString = request.getCardNumber().substring(0, 6);</span>
-<span class="fc" id="L54">			BinNumber binNumber = new BinNumberCheck().checkBinNumber(binNumberString);</span>
-<span class="fc" id="L55">			result = debitCardChecker(binNumber);</span>
-<span class="fc" id="L56">		} else {</span>
-<span class="fc" id="L57">			result = &quot;Card numaranız boş olamaz&quot;;</span>
+<span class="fc" id="L43">		String result = &quot;&quot;;</span>
+<span class="fc" id="L44">		String success = &quot;FAIL&quot;;</span>
+<span class="pc bpc" id="L45" title="1 of 4 branches missed.">		if (request.getCardNumber() != null &amp;&amp; request.getCardNumber().length() &gt;= 6) {</span>
+<span class="fc" id="L46">			String binNumberString = request.getCardNumber().substring(0, 6);</span>
+<span class="fc" id="L47">			BinNumber binNumber = binNumberCheck.checkBinNumber(binNumberString);</span>
+<span class="fc" id="L48">			result = debitCardChecker(binNumber);</span>
+<span class="fc" id="L49">		} else {</span>
+<span class="fc" id="L50">			result = &quot;Kart numaranız boş olamaz&quot;;</span>
 		}
 		try {
-<span class="fc bfc" id="L60" title="All 2 branches covered.">			if (result.equals(SUCCESS)) {</span>
+<span class="fc bfc" id="L53" title="All 2 branches covered.">			if (result.equals(SUCCESS)) {</span>
 
-<span class="fc" id="L62">				priceChecker(request);</span>
+<span class="fc" id="L55">				priceChecker(request);</span>
+<span class="pc bpc" id="L56" title="1 of 2 branches missed.">				if (request.getPrice().compareTo(new BigDecimal(&quot;-1&quot;)) != 0) {</span>
+<span class="fc" id="L57">					boolean checkPromotionCode = true;</span>
+<span class="fc" id="L58">					String promotionCode = request.getPromotionCode();</span>
+<span class="pc bpc" id="L59" title="1 of 4 branches missed.">					if (promotionCode != null &amp;&amp; promotionCode.length() &gt; 0) {</span>
+<span class="fc" id="L60">						checkPromotionCode = checkPromotionCode(request);</span>
+					}
+<span class="fc bfc" id="L62" title="All 2 branches covered.">					if (checkPromotionCode) {</span>
+						// Payment payment = Payment.create(request, options);
+<span class="fc" id="L64">						result = &quot;Ödeme Alındı&quot;;</span>
+<span class="fc" id="L65">						success = &quot;SUCCESS&quot;;</span>
+					} else {
+<span class="fc" id="L67">						result = &quot;Promotion code hatalı.&quot;;</span>
+					}
 
-<span class="fc" id="L64">				boolean checkPromotionCode = true;</span>
-<span class="fc" id="L65">				String promotionCode = request.getPromotionCode();</span>
-<span class="pc bpc" id="L66" title="1 of 4 branches missed.">				if (promotionCode != null &amp;&amp; promotionCode.length() &gt; 0) {</span>
-<span class="fc" id="L67">					checkPromotionCode = checkPromotionCode(request);</span>
+<span class="fc" id="L70">				} else {</span>
+<span class="nc" id="L71">					result = &quot;Etkinlik tarihleri dışında bilet alınamaz&quot;;</span>
 				}
-<span class="fc bfc" id="L69" title="All 2 branches covered.">				if (checkPromotionCode) {</span>
-					// Payment payment = Payment.create(request, options);
-<span class="fc" id="L71">					result = &quot;Ödeme Alındı&quot;;</span>
-<span class="fc" id="L72">					success = &quot;SUCCESS&quot;;</span>
-				} else {
-<span class="fc" id="L74">					result = &quot;Promotion code hatalı.&quot;;</span>
-				}
-
 			}
-<span class="fc" id="L78">			saveSale(request, success);</span>
-<span class="fc" id="L79">			saveLog(request);</span>
-
-<span class="nc" id="L81">		} catch (ParseException e) {</span>
-<span class="nc" id="L82">			return &quot;İşleminiz sırasnda bir hata oluştu&quot;;</span>
-<span class="fc" id="L83">		}</span>
-<span class="fc" id="L84">		return result;</span>
+<span class="fc" id="L74">			saveSale(request, success);</span>
+<span class="fc" id="L75">			saveLog(request);</span>
+<span class="nc" id="L76">		} catch (ParseException e) {</span>
+<span class="nc" id="L77">			return &quot;İşleminiz sırasnda bir hata oluştu&quot;;</span>
+<span class="fc" id="L78">		}</span>
+<span class="fc" id="L79">		return result;</span>
 
 	}
 
 	private String debitCardChecker(BinNumber binNumber) {
-<span class="fc" id="L89">		String result = &quot;&quot;;</span>
-<span class="fc bfc" id="L90" title="All 2 branches covered.">		if (binNumber.getStatus().equalsIgnoreCase(&quot;success&quot;)) {</span>
-<span class="fc bfc" id="L91" title="All 2 branches covered.">			if (binNumber.getCardType().equalsIgnoreCase(DEBIT_CARD)) {</span>
-<span class="fc bfc" id="L92" title="All 2 branches covered.">				if (binNumber.getBankCode() == HALK_BANK_CODE) {</span>
-<span class="fc" id="L93">					result = SUCCESS;</span>
+<span class="fc" id="L84">		String result = &quot;&quot;;</span>
+<span class="fc bfc" id="L85" title="All 2 branches covered.">		if (binNumber.getStatus().equalsIgnoreCase(&quot;success&quot;)) {</span>
+<span class="fc bfc" id="L86" title="All 2 branches covered.">			if (binNumber.getCardType().equalsIgnoreCase(DEBIT_CARD)) {</span>
+<span class="fc bfc" id="L87" title="All 2 branches covered.">				if (binNumber.getBankCode() == HALK_BANK_CODE) {</span>
+<span class="fc" id="L88">					result = SUCCESS;</span>
 				} else {
-<span class="fc" id="L95">					result = &quot;Halk Bank dışında debit Kartlara izin verilmemektedir&quot;;</span>
+<span class="fc" id="L90">					result = &quot;Halk Bank dışında debit Kartlara izin verilmemektedir&quot;;</span>
 				}
 			} else {
-<span class="fc bfc" id="L98" title="All 2 branches covered.">				if (BANK_CODE_LIST.contains(binNumber.getBankCode())) {</span>
-<span class="fc" id="L99">					result = SUCCESS;</span>
+<span class="fc bfc" id="L93" title="All 2 branches covered.">				if (BANK_CODE_LIST.contains(binNumber.getBankCode())) {</span>
+<span class="fc" id="L94">					result = SUCCESS;</span>
 				} else {
-<span class="fc" id="L101">					result = &quot;Bu bankaya izin verilmemektedir: &quot; + binNumber.getBankName();</span>
+<span class="fc" id="L96">					result = &quot;Bu bankaya izin verilmemektedir: &quot; + binNumber.getBankName();</span>
 				}
 			}
 		} else {
-<span class="fc" id="L105">			result = binNumber.getErrorMessage();</span>
+<span class="fc" id="L100">			result = binNumber.getErrorMessage();</span>
 		}
 
-<span class="fc" id="L108">		return result;</span>
+<span class="fc" id="L103">		return result;</span>
 	}
 
 	private void priceChecker(Request request) throws ParseException {
 
-<span class="fc" id="L113">		Date date = request.getCreateDate();</span>
-<span class="fc" id="L114">		SimpleDateFormat sdf = new SimpleDateFormat(&quot;dd/MM/yyyy&quot;);</span>
-<span class="pc bpc" id="L115" title="1 of 4 branches missed.">		if (date.after(sdf.parse(&quot;01/07/2017&quot;)) &amp;&amp; date.before(sdf.parse(&quot;15/01/2018&quot;))) {</span>
-<span class="fc" id="L116">			request.setPrice(new BigDecimal(&quot;250&quot;).setScale(1, BigDecimal.ROUND_UNNECESSARY));</span>
-<span class="pc bpc" id="L117" title="1 of 4 branches missed.">		} else if (date.after(sdf.parse(&quot;16/01/2018&quot;)) &amp;&amp; date.before(sdf.parse(&quot;28/02/2018&quot;))) {</span>
-<span class="fc" id="L118">			request.setPrice(new BigDecimal(&quot;500&quot;).setScale(1, BigDecimal.ROUND_UNNECESSARY));</span>
-<span class="pc bpc" id="L119" title="1 of 4 branches missed.">		} else if (date.after(sdf.parse(&quot;01/03/2018&quot;)) &amp;&amp; date.before(sdf.parse(&quot;30/04/2018&quot;))) {</span>
-<span class="fc" id="L120">			request.setPrice(new BigDecimal(&quot;750&quot;).setScale(1, BigDecimal.ROUND_UNNECESSARY));</span>
-<span class="pc bpc" id="L121" title="1 of 4 branches missed.">		} else if (date.after(sdf.parse(&quot;01/05/2018&quot;)) &amp;&amp; date.before(sdf.parse(&quot;27/05/2018&quot;))) {</span>
-<span class="fc" id="L122">			request.setPrice(new BigDecimal(&quot;1000&quot;).setScale(1, BigDecimal.ROUND_UNNECESSARY));</span>
+<span class="fc" id="L108">		Date date = request.getCreateDate();</span>
+<span class="fc" id="L109">		SimpleDateFormat sdf = new SimpleDateFormat(&quot;dd/MM/yyyy&quot;);</span>
+<span class="pc bpc" id="L110" title="1 of 4 branches missed.">		if (date.after(sdf.parse(&quot;01/07/2017&quot;)) &amp;&amp; date.before(sdf.parse(&quot;15/01/2018&quot;))) {</span>
+<span class="fc" id="L111">			request.setPrice(new BigDecimal(&quot;250&quot;).setScale(1, BigDecimal.ROUND_UNNECESSARY));</span>
+<span class="pc bpc" id="L112" title="1 of 4 branches missed.">		} else if (date.after(sdf.parse(&quot;16/01/2018&quot;)) &amp;&amp; date.before(sdf.parse(&quot;28/02/2018&quot;))) {</span>
+<span class="fc" id="L113">			request.setPrice(new BigDecimal(&quot;500&quot;).setScale(1, BigDecimal.ROUND_UNNECESSARY));</span>
+<span class="pc bpc" id="L114" title="1 of 4 branches missed.">		} else if (date.after(sdf.parse(&quot;01/03/2018&quot;)) &amp;&amp; date.before(sdf.parse(&quot;30/04/2018&quot;))) {</span>
+<span class="fc" id="L115">			request.setPrice(new BigDecimal(&quot;750&quot;).setScale(1, BigDecimal.ROUND_UNNECESSARY));</span>
+<span class="pc bpc" id="L116" title="2 of 4 branches missed.">		} else if (date.after(sdf.parse(&quot;01/05/2018&quot;)) &amp;&amp; date.before(sdf.parse(&quot;27/05/2018&quot;))) {</span>
+<span class="fc" id="L117">			request.setPrice(new BigDecimal(&quot;1000&quot;).setScale(1, BigDecimal.ROUND_UNNECESSARY));</span>
 		} else {
-<span class="fc" id="L124">			request.setPrice(new BigDecimal(&quot;1000&quot;).setScale(1, BigDecimal.ROUND_UNNECESSARY));</span>
+<span class="nc" id="L119">			request.setPrice(new BigDecimal(&quot;-1&quot;).setScale(1, BigDecimal.ROUND_UNNECESSARY));</span>
 		}
-<span class="fc" id="L126">	}</span>
+<span class="fc" id="L121">	}</span>
 
 	private boolean checkPromotionCode(Request request) {
-<span class="fc" id="L129">		Date date = request.getCreateDate();</span>
-<span class="fc" id="L130">		BigDecimal price = request.getPrice();</span>
-<span class="fc" id="L131">		LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();</span>
-<span class="pc bpc" id="L132" title="4 of 18 branches missed.">		switch (request.getPromotionCode()) {</span>
+<span class="fc" id="L124">		BigDecimal price = request.getPrice();</span>
+//		LocalDate localDate = new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+<span class="fc" id="L126">		LocalDate localDate = request.getCreateDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();</span>
+<span class="pc bpc" id="L127" title="4 of 18 branches missed.">		switch (request.getPromotionCode()) {</span>
 		case &quot;GAMMA&quot;:
-<span class="pc bpc" id="L134" title="2 of 4 branches missed.">			if (localDate.getMonthValue() == 3 &amp;&amp; localDate.getDayOfMonth() == 13) {</span>
-<span class="fc" id="L135">				price = price.subtract(price.multiply(new BigDecimal(&quot;0.1&quot;))).setScale(1, BigDecimal.ROUND_UNNECESSARY);</span>
-<span class="fc" id="L136">				request.setPrice(price);</span>
-<span class="fc" id="L137">				return true;</span>
+<span class="pc bpc" id="L129" title="2 of 4 branches missed.">			if (localDate.getMonthValue() == 3 &amp;&amp; localDate.getDayOfMonth() == 13) {</span>
+<span class="fc" id="L130">				price = price.subtract(price.multiply(new BigDecimal(&quot;0.1&quot;))).setScale(1, BigDecimal.ROUND_UNNECESSARY);</span>
+<span class="fc" id="L131">				request.setPrice(price);</span>
+<span class="fc" id="L132">				return true;</span>
 			} else {
-<span class="nc" id="L139">				return false;</span>
+<span class="nc" id="L134">				return false;</span>
 			}
 
 		case &quot;BECK&quot;:
-<span class="pc bpc" id="L143" title="2 of 4 branches missed.">			if (localDate.getMonthValue() == 3 &amp;&amp; localDate.getDayOfMonth() == 31) {</span>
-<span class="fc" id="L144">				price = price.subtract(price.multiply(new BigDecimal(&quot;0.15&quot;))).setScale(1,</span>
+<span class="pc bpc" id="L138" title="2 of 4 branches missed.">			if (localDate.getMonthValue() == 3 &amp;&amp; localDate.getDayOfMonth() == 31) {</span>
+<span class="fc" id="L139">				price = price.subtract(price.multiply(new BigDecimal(&quot;0.15&quot;))).setScale(1,</span>
 						BigDecimal.ROUND_UNNECESSARY);
-<span class="fc" id="L146">				request.setPrice(price);</span>
-<span class="fc" id="L147">				return true;</span>
+<span class="fc" id="L141">				request.setPrice(price);</span>
+<span class="fc" id="L142">				return true;</span>
 			} else {
-<span class="nc" id="L149">				return false;</span>
+<span class="nc" id="L144">				return false;</span>
 			}
 		case &quot;CUNNINGHAM&quot;:
-<span class="pc bpc" id="L152" title="2 of 4 branches missed.">			if (localDate.getMonthValue() == 5 &amp;&amp; localDate.getDayOfMonth() == 26) {</span>
-<span class="fc" id="L153">				price = price.subtract(price.multiply(new BigDecimal(&quot;0.05&quot;))).setScale(1,</span>
+<span class="pc bpc" id="L147" title="2 of 4 branches missed.">			if (localDate.getMonthValue() == 5 &amp;&amp; localDate.getDayOfMonth() == 26) {</span>
+<span class="fc" id="L148">				price = price.subtract(price.multiply(new BigDecimal(&quot;0.05&quot;))).setScale(1,</span>
 						BigDecimal.ROUND_UNNECESSARY);
-<span class="fc" id="L155">				request.setPrice(price);</span>
-<span class="fc" id="L156">				return true;</span>
+<span class="fc" id="L150">				request.setPrice(price);</span>
+<span class="fc" id="L151">				return true;</span>
 			} else {
-<span class="nc" id="L158">				return false;</span>
+<span class="nc" id="L153">				return false;</span>
 			}
 		case &quot;AGILE&quot;:
-<span class="pc bpc" id="L161" title="3 of 6 branches missed.">			if (localDate.getMonthValue() == 2 &amp;&amp; localDate.getDayOfMonth() &lt;= 13 &amp;&amp; localDate.getDayOfMonth() &gt;= 13) {</span>
-<span class="nc" id="L162">				price = price.subtract(price.multiply(new BigDecimal(&quot;0.2&quot;))).setScale(1, BigDecimal.ROUND_UNNECESSARY);</span>
-<span class="nc" id="L163">				return true;</span>
+<span class="pc bpc" id="L156" title="3 of 6 branches missed.">			if (localDate.getMonthValue() == 2 &amp;&amp; localDate.getDayOfMonth() &lt;= 13 &amp;&amp; localDate.getDayOfMonth() &gt;= 13) {</span>
+<span class="nc" id="L157">				price = price.subtract(price.multiply(new BigDecimal(&quot;0.2&quot;))).setScale(1, BigDecimal.ROUND_UNNECESSARY);</span>
+<span class="nc" id="L158">				return true;</span>
 			} else {
-<span class="fc" id="L165">				return false;</span>
+<span class="fc" id="L160">				return false;</span>
 			}
 		default:
-<span class="fc" id="L168">			return false;</span>
+<span class="fc" id="L163">			return false;</span>
 
 		}
 
@@ -173,25 +168,25 @@ public class PaymentCheck {
 
 	private void saveLog(Request request) throws ParseException {
 
-<span class="fc" id="L176">		Date date = Calendar.getInstance().getTime();</span>
-<span class="fc" id="L177">		SimpleDateFormat sdf = new SimpleDateFormat(&quot;dd.MM.yyyy'T'HH:mm:ssZ&quot;);</span>
-<span class="fc" id="L178">		Log log = new Log();</span>
-<span class="fc" id="L179">		log.setCardNumber(request.getCardNumber());</span>
-<span class="fc" id="L180">		log.setCreateDate(date);</span>
-<span class="fc" id="L181">		log.setProcessId(request.getProcessId());</span>
-<span class="fc" id="L182">		logger.info(sdf.format(log.getCreateDate()) + &quot;,&quot; + log.getProcessId() + &quot;,&quot; + log.getCardNumber());</span>
-<span class="fc" id="L183">		logService.save(log);</span>
-<span class="fc" id="L184">	}</span>
+<span class="fc" id="L171">		Date date = Calendar.getInstance().getTime();</span>
+<span class="fc" id="L172">		SimpleDateFormat sdf = new SimpleDateFormat(&quot;dd.MM.yyyy'T'HH:mm:ssZ&quot;);</span>
+<span class="fc" id="L173">		Log log = new Log();</span>
+<span class="fc" id="L174">		log.setCardNumber(request.getCardNumber());</span>
+<span class="fc" id="L175">		log.setCreateDate(date);</span>
+<span class="fc" id="L176">		log.setProcessId(request.getProcessId());</span>
+<span class="fc" id="L177">		logger.info(sdf.format(log.getCreateDate()) + &quot;,&quot; + log.getProcessId() + &quot;,&quot; + log.getCardNumber());</span>
+<span class="fc" id="L178">		logService.save(log);</span>
+<span class="fc" id="L179">	}</span>
 
 	private void saveSale(Request request, String success) {
-<span class="fc" id="L187">		Sale sale = new Sale();</span>
-<span class="fc bfc" id="L188" title="All 2 branches covered.">		if (success.equals(&quot;SUCCESS&quot;)) {</span>
-<span class="fc" id="L189">			sale.setPrice(request.getPrice());</span>
+<span class="fc" id="L182">		Sale sale = new Sale();</span>
+<span class="fc bfc" id="L183" title="All 2 branches covered.">		if (success.equals(&quot;SUCCESS&quot;)) {</span>
+<span class="fc" id="L184">			sale.setPrice(request.getPrice());</span>
 		}
-<span class="fc" id="L191">		sale.setProcessId(request.getProcessId());</span>
-<span class="fc" id="L192">		sale.setResult(success);</span>
-<span class="fc" id="L193">		saleService.save(sale);</span>
-<span class="fc" id="L194">	}</span>
+<span class="fc" id="L186">		sale.setProcessId(request.getProcessId());</span>
+<span class="fc" id="L187">		sale.setResult(success);</span>
+<span class="fc" id="L188">		saleService.save(sale);</span>
+<span class="fc" id="L189">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>

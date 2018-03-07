@@ -1,7 +1,7 @@
-com\omer\iyzico\Application.class
 com\omer\iyzico\controller\LogController.class
 com\omer\iyzico\controller\SaleController.class
 com\omer\iyzico\model\Log.class
+com\omer\iyzico\TicketPaymentApplication.class
 com\omer\iyzico\service\LogService.class
 com\omer\iyzico\model\Sale.class
 com\omer\iyzico\controller\TicketController.class
@@ -11,6 +11,7 @@ com\omer\iyzico\controller\PaymentController.class
 com\omer\iyzico\repository\SaleRepository.class
 com\omer\iyzico\model\Request.class
 com\omer\iyzico\repository\LogRepository.class
+com\omer\iyzico\util\OptionsRetriever.class
 com\omer\iyzico\checkers\PaymentCheck.class
 com\omer\iyzico\checkers\BinNumberCheck.class
 com\omer\iyzico\service\SaleService.class

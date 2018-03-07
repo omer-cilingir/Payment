@@ -1,5 +1,4 @@
 E:\Program Files\workspace\payment\src\main\java\com\omer\iyzico\checkers\BinNumberCheck.java
-E:\Program Files\workspace\payment\src\main\java\com\omer\iyzico\Application.java
 E:\Program Files\workspace\payment\src\main\java\com\omer\iyzico\service\SaleService.java
 E:\Program Files\workspace\payment\src\main\java\com\omer\iyzico\model\Ticket.java
 E:\Program Files\workspace\payment\src\main\java\com\omer\iyzico\model\Log.java
@@ -8,6 +7,7 @@ E:\Program Files\workspace\payment\src\main\java\com\omer\iyzico\controller\Paym
 E:\Program Files\workspace\payment\src\main\java\com\omer\iyzico\controller\SaleController.java
 E:\Program Files\workspace\payment\src\main\java\com\omer\iyzico\repository\TicketRepository.java
 E:\Program Files\workspace\payment\src\main\java\com\omer\iyzico\service\TicketService.java
+E:\Program Files\workspace\payment\src\main\java\com\omer\iyzico\TicketPaymentApplication.java
 E:\Program Files\workspace\payment\src\main\java\com\omer\iyzico\repository\LogRepository.java
 E:\Program Files\workspace\payment\src\main\java\com\omer\iyzico\service\LogService.java
 E:\Program Files\workspace\payment\src\main\java\com\omer\iyzico\controller\LogController.java
@@ -15,3 +15,4 @@ E:\Program Files\workspace\payment\src\main\java\com\omer\iyzico\model\Sale.java
 E:\Program Files\workspace\payment\src\main\java\com\omer\iyzico\repository\SaleRepository.java
 E:\Program Files\workspace\payment\src\main\java\com\omer\iyzico\checkers\PaymentCheck.java
 E:\Program Files\workspace\payment\src\main\java\com\omer\iyzico\controller\TicketController.java
+E:\Program Files\workspace\payment\src\main\java\com\omer\iyzico\util\OptionsRetriever.java

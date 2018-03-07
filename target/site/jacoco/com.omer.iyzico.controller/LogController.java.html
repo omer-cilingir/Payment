@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,24 +15,25 @@ import com.omer.iyzico.model.Log;
 import com.omer.iyzico.service.LogService;
 
 @RestController
+@CrossOrigin(origins = &quot;*&quot;)
 @RequestMapping(&quot;/&quot;)
-<span class="fc" id="L18">public class LogController {</span>
-	
-<span class="fc" id="L20">	Gson gson = new GsonBuilder().setPrettyPrinting().create();</span>
+<span class="fc" id="L20">public class LogController {</span>
+
+<span class="fc" id="L22">	Gson gson = new GsonBuilder().setPrettyPrinting().create();</span>
 
 	@Autowired
 	LogService logService;
 
 	@RequestMapping(path = &quot;/logs&quot;, produces = MediaType.APPLICATION_JSON_VALUE)
 	public String logs() {
-<span class="fc" id="L27">		List&lt;Log&gt; logs = logService.findAll();</span>
-<span class="fc" id="L28">		return gson.toJson(logs);</span>
+<span class="fc" id="L29">		List&lt;Log&gt; logs = logService.findAll();</span>
+<span class="fc" id="L30">		return gson.toJson(logs);</span>
 	}
 
 	@RequestMapping(path = &quot;/logs/{id}&quot;, produces = MediaType.APPLICATION_JSON_VALUE)
 	public String log(@PathVariable(&quot;id&quot;) Integer id) {
-<span class="fc" id="L33">		Log log = logService.findById(id);</span>
-<span class="fc" id="L34">		return gson.toJson(log);</span>
+<span class="fc" id="L35">		Log log = logService.findById(id);</span>
+<span class="fc" id="L36">		return gson.toJson(log);</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>

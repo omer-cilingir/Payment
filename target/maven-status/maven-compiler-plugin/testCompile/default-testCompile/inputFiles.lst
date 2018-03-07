@@ -1,7 +1,9 @@
-E:\Program Files\workspace\payment\src\test\java\com\omer\iyzico\SaleControllerTest.java
-E:\Program Files\workspace\payment\src\test\java\com\omer\iyzico\LogControllerTest.java
-E:\Program Files\workspace\payment\src\test\java\com\omer\iyzico\PaymentControllerTest.java
-E:\Program Files\workspace\payment\src\test\java\com\omer\iyzico\BinNumberCheckTest.java
-E:\Program Files\workspace\payment\src\test\java\com\omer\iyzico\PaymentCheckTest.java
-E:\Program Files\workspace\payment\src\test\java\com\omer\iyzico\IntegrationTest.java
-E:\Program Files\workspace\payment\src\test\java\com\omer\iyzico\TicketControllerTest.java
+E:\Program Files\workspace\payment\src\test\java\com\omer\iyzico\service\LogServiceTest.java
+E:\Program Files\workspace\payment\src\test\java\com\omer\iyzico\service\TicketServiceTest.java
+E:\Program Files\workspace\payment\src\test\java\com\omer\iyzico\controller\PaymentControllerTest.java
+E:\Program Files\workspace\payment\src\test\java\com\omer\iyzico\controller\LogControllerTest.java
+E:\Program Files\workspace\payment\src\test\java\com\omer\iyzico\controller\SaleControllerTest.java
+E:\Program Files\workspace\payment\src\test\java\com\omer\iyzico\checkers\PaymentCheckTest.java
+E:\Program Files\workspace\payment\src\test\java\com\omer\iyzico\controller\TicketControllerTest.java
+E:\Program Files\workspace\payment\src\test\java\com\omer\iyzico\checkers\BinNumberCheckTest.java
+E:\Program Files\workspace\payment\src\test\java\com\omer\iyzico\service\SaleServiceTest.java
