@@ -87,3 +87,44 @@ Response example
    }
 ]
 ```
+#### Satışları listelemek için
+```http
+GET https://omer-payment.herokuapp.com/sales
+```
+Response example
+```json
+[
+      {
+      "id": 1,
+      "processId": "001",
+      "result": "FAIL"
+   },
+      {
+      "id": 2,
+      "processId": "002",
+      "result": "SUCCESS",
+      "price": 250
+   }
+]
+```
+#### Logları listelemek için
+```http
+GET https://omer-payment.herokuapp.com/logs
+```
+Response example
+```json
+[
+  {
+    "id": 1,
+    "processId": "001",
+    "createDate": "Mar 7, 2018 9:50:54 PM",
+    "cardNumber": "5890040000000016"
+  },
+  {
+    "id": 2,
+    "processId": "002",
+    "createDate": "Mar 7, 2018 9:50:55 PM",
+    "cardNumber": "5526080000000006"
+  }
+]
+```
