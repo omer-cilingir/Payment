@@ -1,9 +1,0 @@
-com\omer\iyzico\controller\PaymentControllerTest.class
-com\omer\iyzico\controller\SaleControllerTest.class
-com\omer\iyzico\service\TicketServiceTest.class
-com\omer\iyzico\controller\LogControllerTest.class
-com\omer\iyzico\service\LogServiceTest.class
-com\omer\iyzico\controller\TicketControllerTest.class
-com\omer\iyzico\service\SaleServiceTest.class
-com\omer\iyzico\checkers\BinNumberCheckTest.class
-com\omer\iyzico\checkers\PaymentCheckTest.class
